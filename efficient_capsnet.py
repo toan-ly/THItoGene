@@ -53,7 +53,8 @@ class RoutingLayer(nn.Module):
     def forward(self, input):
         u = torch.einsum("...ji,kjiz->...kjz", input, self.W)
         c = torch.einsum("...ij,...kj->...i", u, u)[..., None]
-        c = c / torch.sqrt(torch.Tensor([self.dim_capsules]).type(torch.FloatTensor))
+        # c = c / torch.sqrt(torch.Tensor([self.dim_capsules]).type(torch.FloatTensor))
+        c = c / torch.sqrt(torch.tensor([self.dim_capsules], dtype=torch.float32, device=c.device))
         c = torch.softmax(c, axis=1)
         c = c + self.b
         s = torch.sum(torch.mul(u, c), dim=-2)
